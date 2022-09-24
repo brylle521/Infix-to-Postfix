@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<body>
+        <form action="" method="post">
+            Infix:
+            <input type=text name="t1">
+            <br>
+            <br>
+            <input type=submit name="s">
+            <br>
+            <br>
+            <br>
+            <br>
+<?php
+    $a=$_POST['t1']; 
+    echo "Postfix:".$a; 
+class StackNode
+{
+	public $operand;
+	public $next;
+	public	function __construct($operand, $top)
+	{
+		$this->operand = $operand;
+		$this->next = $top;
+	}
+}
+class MyStack
+{
+	public $top;
+	public $count;
+	public	function __construct()
+	{
+		$this->top = NULL;
+		$this->count = 0;
+	}
+	
+	public	function isSize()
+	{
+		return $this->count;
+	}
+	public	function isEmpty()
+	{
+		if ($this->isSize() > 0)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	
+	public	function push($value)
+	{
+		
+		$this->top = new StackNode($value, $this->top);
+		
+		$this->count++;
+	}
+	
+	public	function pop()
+	{
+		$value = $this->peek();
+		if ($this->isEmpty() == false)
+		{
+			$this->top = $this->top->next;
+			
+			$this->count--;
+		}
+		return $value;
+	}
+	
+	public	function peek()
+	{
+		if (!$this->isEmpty())
+		{
+			return $this->top->operand;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+}
+class Execution
+{
+	public	function evaluate($e)
+	{
+		
+		$size = strlen($e);
+		$a = 0;
+		$b = 0;
+		$s = new MyStack();
+		$isVaild = true;
+
+		for ($i = 0; $i < $size && $isVaild; $i++)
+		{
+			if ($e[$i] >= '0' && $e[$i] <= '9')
+			{
+				$a = ord($e[$i]) - ord('0');
+				$s->push($a);
+			}
+			else if ($s->isSize() > 1)
+			{
+				$a = $s->pop();
+				$b = $s->pop();
+
+				if ($e[$i] == '+')
+				{
+					$s->push($b + $a);
+				}
+				else if ($e[$i] == '-')
+				{
+					$s->push($b - $a);
+				}
+				else if ($e[$i] == '*')
+				{
+					$s->push($b * $a);
+				}
+				else if ($e[$i] == '/')
+				{
+					$s->push((int)($b / $a));
+				}
+				else if ($e[$i] == '%')
+				{
+					$s->push($b % $a);
+				}
+				else
+				{
+					
+				}
+			}
+			else if ($s->isSize() == 1)
+			{
+				
+				if ($e[$i] == '-')
+				{
+					$a = $s->pop();
+					$s->push(-$a);
+				}
+				else if ($e[$i] != '+')
+				{
+					
+					$isVaild = false;
+				}
+			}
+			else
+			{
+				$isVaild = false;
+			}
+		}
+		if ($isVaild == false)
+		{
+			
+			echo $e.
+			" Invalid expression ", "\n";
+			return;
+		}
+		echo $e.
+		" = ".strval($s->pop()), "\n";
+	}
+	public static
+	function main($args)
+	{
+
+	}
+}
+Execution::main(array());
+?> 
+
+</body>
+</html>
